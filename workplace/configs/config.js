@@ -20,7 +20,7 @@ const TWSERVER_CONFIG = {
   // 后端服务器端口
   port: 5000,
   // 注册路由
-  routes:['index']
+  routes:['routeDemo1']
 }
 
 module.exports = {

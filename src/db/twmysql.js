@@ -1,18 +1,22 @@
 const mysql = require('mysql');
 const { MYSQL_CONFIG } = require('../../workplace/configs/config');
-const connection = mysql.createPool(MYSQL_CONFIG);
+const pool = mysql.createPool(MYSQL_CONFIG);
 
-connection.execSQL = function (sql) {
-  const promise = new Promise((resolve, reject) => {
-    connection.query(sql, (err, result) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(result);
+pool.execSQL = function (sql) {
+  const promise = new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, connection) {
+
+      connection.query(sql, (err, result) => {
+        connection.release();
+        if (err) {
+          reject(err);
+        }
+        resolve(result);
+      });
     })
+
   });
   return promise;
 }
 
-module.exports = connection;
+module.exports = pool;

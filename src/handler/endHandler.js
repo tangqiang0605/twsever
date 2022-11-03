@@ -1,4 +1,7 @@
-module.exports = (res, result) => {
+const store = require('../store/index');
+
+function endHandler(result) {
+  const { res } = store;
   switch (res._headers['content-type']) {
     case 'application/json':
       res.end(JSON.stringify(result))
@@ -11,3 +14,4 @@ module.exports = (res, result) => {
       break;
   }
 }
+module.exports = endHandler;
