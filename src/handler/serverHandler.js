@@ -50,9 +50,9 @@ const serverHandler = async function (req, res) {
 
   // 全局路由前置守卫
   let isStop = false;
-  let beforeroutes = ROUTER_CONFIG.beforeroute || [];
+  let beforeroutes = ROUTER_CONFIG.beforeroutes || [];
   for (let i = 0; i < beforeroutes.length; i++) {
-    await require(brPath(routes[i]))(req, res)
+    await require(brPath(beforeroutes[i]))(req, res)
       .then(result => result)
       .catch(err => isStop = true);
     if (isStop) {
@@ -73,30 +73,32 @@ const serverHandler = async function (req, res) {
       handleRoute(curRoute, isLast);
     } else if (typeOf(curRoute) === 'Object') {
       // 在配置文件中使用{beforeroute:,route:,afterroute:}格式配置路由
-      if (!curRoute.route) {
+      if (!curRoute.routes) {
         // 局部前置路由守卫
-        if (curRoute.beforeroute) {
-          await (brPath(curRoute.beforeroute))(req, res).then(result => result).catch(err => isStop = true);
+        if (curRoute.beforeroutes) {
+          await (brPath(curRoute.beforeroutes))(req, res).then(result => result).catch(err => isStop = true);
           if (isStop) { return; }
         }
 
         // 局部路由
-        if (typeOf(curRoute.route) === 'Array') {
-          curRoute.route.forEach(async function (val) {
+        if (typeOf(curRoute.routes) === 'Array') {
+          curRoute.routes.forEach(async function (val) {
             // 执行路由模块
             handleRoute(val, isLast);
           })
-        } else if (typeOf(curRoute.route) === 'String') {
+        } else if (typeOf(curRoute.routes) === 'String') {
           // 执行路由模块
-          handleRoute(curRoute.route, isLast);
+          handleRoute(curRoute.routes, isLast);
         } else {
           console.error('路由配置错误：只支持Array类型和String类型的值，不接受'
-            + typeOf(curRoute.route) + '类型的值！');
+            + typeOf(curRoute.routes) + '类型的值！');
         }
 
         // 局部后置路由
-        if (curRoute.afterroute) {
-          await arPath(curRoute.afterroute)(req, res);
+        if (curRoute.afterroutes) {
+          curRoute.afterroutes.forEach(async function (val) {
+            await arPath(curRoute.afterroutes)(req, res);
+          })
         }
 
       } else {
@@ -110,9 +112,9 @@ const serverHandler = async function (req, res) {
   }
 
   // 路由后置守卫
-  let afterroutes = ROUTER_CONFIG.afterroute || [];
+  let afterroutes = ROUTER_CONFIG.afterroutes || [];
   for (let i = 0; i < afterroutes.length; i++) {
-    await require(arPath(routes[i]))(req, res);
+    await require(arPath(afterroutes[i]))(req, res);
   }
 }
 

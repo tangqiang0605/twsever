@@ -24,13 +24,13 @@ const TWSERVER_CONFIG = {
 const ROUTER_CONFIG = {
   // 注册路由
   brpath:'../workplace/routers',
-  beforeroute: [],
+  beforeroutes: ['beforeRoute'],
 
   routespath:'../workplace/routers',
   routes: ['routeDemo1','routeDemo2'],
 
   arpath: '../workplace/routers',
-  afterroute: [],
+  afterroutes: [],
 
   logwhenrunning: false
 }

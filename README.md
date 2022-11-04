@@ -226,13 +226,13 @@ if (mapper(isGet, '/api/:id/:author')) {
 const ROUTER_CONFIG = {
   // 注册路由
   brpath:'../workplace/routers',
-  beforeroute: ['myBr'],
+  beforeroutes: ['myBr'],
 
   routespath:'../workplace/routers',
   routes: ['routeDemo1','routeDemo2'],
 
   arpath: '../workplace/routers',
-  afterroute: ['myAr'],
+  afterroutes: ['myAr'],
 
   logwhenrunning: true
 }
@@ -244,20 +244,20 @@ const ROUTER_CONFIG = {
 const ROUTER_CONFIG = {
   // 注册路由
   brpath:'../workplace/routers',
-  beforeroute: ['myBr'],
+  beforeroutes: ['myBr'],
 
   routespath:'../workplace/routers',
   routes: [
       'routeDemo1',
       {
-          beforeroute:['myBr2'],
-          route:['routeDemo2','routeDemo3']
-          afterroute:['myAr2']
+          beforeroutes:['myBr2'],
+          routes:['routeDemo2','routeDemo3']
+          afterroutes:['myAr2']
       }
   ],
 
   arpath: '../workplace/routers',
-  afterroute: ['myAr'],
+  afterroutes: ['myAr'],
 
   logwhenrunning: true
 }
