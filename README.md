@@ -105,13 +105,14 @@ const ROUTER_CONFIG = {
 }
 ```
 
-定义函数：在路由模块中定义函数：该函数接收来自服务器的两个参数request和response，然后将该方法通过exports暴露出去。注意，请将函数直接暴露出去而不是暴露一个包含该函数的对象或数组。如果你需要暴露多个方法，这是不允许的，你只能新建另一个路由模块，即，一个路由模块只能暴露一个函数。
+定义函数：在路由模块中定义函数：该函数接收来自服务器的两个参数request和response，然后将该方法通过exports暴露出去。注意，请将函数直接暴露出去而不是暴露一个包含该函数的对象或数组。如果你需要暴露多个方法，你可以新建一个路由模块，或者，导出一个对象(你只需要保证函数的返回类型为promise)
 
-``` js
-const myRoute ( req , res ) {
-
+``` javascript
+module.exports = {
+	myroute1,
+    myroute2,
+    myroute3
 }
-module.exports = myRoute;
 ```
 
 假设你在controllers/blogHandler.js中已经编写完成你的业务代码（先忽略业务的实现细节），下面我们将它和路由联系起来。
@@ -215,6 +216,53 @@ if (mapper(isGet, '/api/:id/:author')) {
   - 编写if语句调用mapper，然后执行对应controllers的方法
 - 启动服务器
 
+## 路由拦截
+
+当你需要使用路由拦截（路由守卫）时，你可以添加一个普通的路由模块，然后将它放在routes数组的第一个，只需要根据条件返回不同的promise即可，其实就已经实现了路由拦截。
+
+除此之外，twserver提供了真实的路由守卫，你可以在configs文件中的beforeroute数组中注册全局路由守卫并使用路由守卫，路由守卫的用法和路由模块类似，你需要确保返回值不为空且是promise类型。此外你还可以使用全局后置路由守卫。唯一与普通路由模块不同的是，在路由守卫中，你只能导出一个函数，所以，当你有多个函数需要导出使用时，应该拆分成多个路由守卫，每个路由守卫只导出一个函数。（后续可能会支持一个路由守卫导出多个中间件，但也可能不会，一个合理的实践是，一个路由守卫导出一个函数而不是多个函数）
+
+``` js
+const ROUTER_CONFIG = {
+  // 注册路由
+  brpath:'../workplace/routers',
+  beforeroute: ['myBr'],
+
+  routespath:'../workplace/routers',
+  routes: ['routeDemo1','routeDemo2'],
+
+  arpath: '../workplace/routers',
+  afterroute: ['myAr'],
+
+  logwhenrunning: true
+}
+```
+
+你还可以在routes中配置局部路由守卫。
+
+``` js
+const ROUTER_CONFIG = {
+  // 注册路由
+  brpath:'../workplace/routers',
+  beforeroute: ['myBr'],
+
+  routespath:'../workplace/routers',
+  routes: [
+      'routeDemo1',
+      {
+          beforeroute:['myBr2'],
+          route:['routeDemo2','routeDemo3']
+          afterroute:['myAr2']
+      }
+  ],
+
+  arpath: '../workplace/routers',
+  afterroute: ['myAr'],
+
+  logwhenrunning: true
+}
+```
+
 ## 使用数据库
 
 twserve提供了两种数据库的使用方法，以简化业务的增删查改，只需最多四行代码就可以实现crud以及方便的异常处理：
@@ -263,5 +311,4 @@ msyql.query('select * from blogs', (err, res) => console.log(res));
 twserver提供了查询方法execSQL，返回一个promise。对于mysql，我们还自动处理了连接池。
 
 对于execSQL不支持的功能，你可以参照方法二使用npm上mysql、mongoose提供的方法。
-
 

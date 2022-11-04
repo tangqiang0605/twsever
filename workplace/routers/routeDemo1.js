@@ -12,11 +12,15 @@ const handleBlogRoute = (req, res) => {
     // 在getDetail中使用了twserver框架提供的mysql查询方法（推荐）。
     return bloghandler
       .getDetail(query.id)
-      .then(res => res.length ? res : '该用户不存在');
+      .then(res => res.length ? res : '该用户不存在')
+      .catch(err => err);
   }
   if (mapper(isGet, '/api/getdetail2')) {
     // 在getDetail2中使用了mysql提供的查询方法。
-    return bloghandler.getDetail2(query.id).then(res => res.length ? res : '该用户不存在').catch(err => err);
+    return bloghandler
+      .getDetail2(query.id)
+      .then(res => res.length ? res : '该用户不存在')
+      .catch(err => err);
   }
 
   // 处理POST请求

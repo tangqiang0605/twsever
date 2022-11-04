@@ -15,20 +15,28 @@ const routePath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.rout
 const brPath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.brpath + '/', routeName);
 const arPath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.arpath + '/', routeName);
 
-async function handleRoute(curRoute) {
-  if (ROUTER_CONFIG.logwhenrunning || false) console.log('route:', curRoute, 'is running');
+async function handleRoute(curRoute, isLast) {
+  const req = store.req;
+  const res = store.res;
+  if (ROUTER_CONFIG.logwhenrunning || false) console.log('route:', curRoute, 'ran');
   let route = require(routePath(curRoute));
   if (typeOf(route) === 'Object') {
     Object.keys(route).forEach(
       async function (val) {
         await route[`${val}`](req, res)
           .then(result => endHandler(result))
-          .catch(err => routeError(err, i === routes.length || store.ismapper))
+          .catch(err => {
+            routeError(err, isLast)
+          })
       })
-  } else {
+  } else if (typeOf(route) === 'Function') {
     await require(routePath(curRoute))(req, res)
       .then(result => endHandler(result))
-      .catch(err => routeError(err, i === routes.length - 1 || store.ismapper));
+      .catch(err => {
+        routeError(err, isLast)
+      });
+  } else {
+    console.err('路由模块错误：导出的类型必须是函数或者对象，而不是' + typeOf(curRoute));
   }
 }
 
@@ -57,29 +65,35 @@ const serverHandler = async function (req, res) {
   store.ismapper = false;
   isStop = false;
   for (let i = 0; i < routes.length && (!store.ismapper); i++) {
-
     let curRoute = routes[i];
-    if (typeOf(curRoute) === 'Object') {
+    let isLast = (i === routes.length - 1);
+
+    if (typeOf(curRoute) === 'String') {
+      // 执行路由模块
+      handleRoute(curRoute, isLast);
+    } else if (typeOf(curRoute) === 'Object') {
       // 在配置文件中使用{beforeroute:,route:,afterroute:}格式配置路由
       if (!curRoute.route) {
         // 局部前置路由守卫
         if (curRoute.beforeroute) {
           await (brPath(curRoute.beforeroute))(req, res).then(result => result).catch(err => isStop = true);
-          if (isStop) return;
+          if (isStop) { return; }
         }
+
         // 局部路由
         if (typeOf(curRoute.route) === 'Array') {
           curRoute.route.forEach(async function (val) {
             // 执行路由模块
-            handleRoute(val);
+            handleRoute(val, isLast);
           })
         } else if (typeOf(curRoute.route) === 'String') {
           // 执行路由模块
-          handleRoute(curRoute.route);
+          handleRoute(curRoute.route, isLast);
         } else {
           console.error('路由配置错误：只支持Array类型和String类型的值，不接受'
             + typeOf(curRoute.route) + '类型的值！');
         }
+
         // 局部后置路由
         if (curRoute.afterroute) {
           await arPath(curRoute.afterroute)(req, res);
@@ -89,11 +103,9 @@ const serverHandler = async function (req, res) {
         console.error('路由配置错误：局部路由配置必须包含至少一个route');
       }
 
-    } else if (typeOf(curRoute) === 'Function') {
-      // 执行路由模块
-      handleRoute(curRoute);
     } else {
-      console.error('路由模块错误：导出的类型必须是函数或者对象')
+      console.error('路由配置错误：只支持Object类型和String类型的值，不接受'
+        + typeOf(curRoute.route) + '类型的值！');
     }
   }
 

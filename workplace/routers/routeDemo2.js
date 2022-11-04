@@ -12,12 +12,12 @@ const handleBlogRoute = (req, res) => {
 
   if (mapper(isGet, '/api/get/detail')) {
     return bloghandler
-    .getDetail(query.id)
+      .getDetail(query.id)
       .then(res => res.length ? new SuccessModel(res) : new ErrorModel('该用户不存在'))
-      .catch(err=>err);
+      .catch(err => err);
     // .then(res => res.length ? res : '该用户不存在');
   }
-  
+
   return Promise.reject(new ErrorModel(404));
   // return Promise.reject(404);
 }

@@ -6,7 +6,7 @@ module.exports = (err, isLast) => {
   if ((err === 404||err==='404'||err.data===404||err.data==='404') && isLast) {
     noPage(store.res);
   }
-  else {
+  else if (store.ismapper) {
     // 匹配下一个路由
   }
 

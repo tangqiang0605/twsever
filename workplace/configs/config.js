@@ -32,7 +32,7 @@ const ROUTER_CONFIG = {
   arpath: '../workplace/routers',
   afterroute: [],
 
-  logwhenrunning: true
+  logwhenrunning: false
 }
 
 module.exports = {
