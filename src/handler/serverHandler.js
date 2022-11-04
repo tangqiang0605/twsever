@@ -21,19 +21,24 @@ async function handleRoute(curRoute, isLast) {
   if (ROUTER_CONFIG.logwhenrunning || false) console.log('route:', curRoute, 'ran');
   let route = require(routePath(curRoute));
   if (typeOf(route) === 'Object') {
-    Object.keys(route).forEach(
-      async function (val) {
+    let keys = Object.keys(route);
+    for (let i = 0; i < keys.length; i++) {
+      let val = keys[i];
+      if (!store.ismapper) {
         await route[`${val}`](req, res)
           .then(result => endHandler(result))
           .catch(err => {
-            routeError(err, isLast)
+            // console.log(err);
+            routeError(err, i === keys.length - 1&&isLast)
           })
-      })
+      }
+    }
   } else if (typeOf(route) === 'Function') {
     await require(routePath(curRoute))(req, res)
       .then(result => endHandler(result))
       .catch(err => {
-        routeError(err, isLast)
+        // console.log(err,isLast);
+        routeError(err, isLast);
       });
   } else {
     console.err('路由模块错误：导出的类型必须是函数或者对象，而不是' + typeOf(curRoute));
@@ -43,6 +48,7 @@ async function handleRoute(curRoute, isLast) {
 
 const serverHandler = async function (req, res) {
   // 数据处理
+  store.ismapper = false;
   await resHandler(res);
   await reqHandler(req);
   store.req = req;
@@ -62,7 +68,6 @@ const serverHandler = async function (req, res) {
 
 
   let routes = ROUTER_CONFIG.routes || [];
-  store.ismapper = false;
   isStop = false;
   for (let i = 0; i < routes.length && (!store.ismapper); i++) {
     let curRoute = routes[i];
@@ -72,8 +77,9 @@ const serverHandler = async function (req, res) {
       // 执行路由模块
       handleRoute(curRoute, isLast);
     } else if (typeOf(curRoute) === 'Object') {
+      // console.log(curRoute.routes);
       // 在配置文件中使用{beforeroute:,route:,afterroute:}格式配置路由
-      if (!curRoute.routes) {
+      if (curRoute.routes) {
         // 局部前置路由守卫
         if (curRoute.beforeroutes) {
           await (brPath(curRoute.beforeroutes))(req, res).then(result => result).catch(err => isStop = true);
@@ -82,10 +88,13 @@ const serverHandler = async function (req, res) {
 
         // 局部路由
         if (typeOf(curRoute.routes) === 'Array') {
-          curRoute.routes.forEach(async function (val) {
+          const routes = curRoute.routes;
+          let val;
+          for (let j = 0; j < routes.length; j++){
+            val = routes[j];
             // 执行路由模块
-            handleRoute(val, isLast);
-          })
+            handleRoute(val, (j===routes.length-1)&&isLast);
+          }
         } else if (typeOf(curRoute.routes) === 'String') {
           // 执行路由模块
           handleRoute(curRoute.routes, isLast);
