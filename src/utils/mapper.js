@@ -8,6 +8,7 @@ module.exports = function (way, url) {
 
   // 普通路由
   if (way && url === path) {
+    store.ismapper = true;
     return true;
   }
   
@@ -27,6 +28,7 @@ module.exports = function (way, url) {
         params[keys[i]] = values[i];
       }
       store.req.params = params;
+      store.ismapper = true;
       return true;
     } 
     return false;

@@ -19,12 +19,25 @@ const TWSERVER_CONFIG = {
   returnform: 'json',
   // 后端服务器端口
   port: 5000,
+}
+
+const ROUTER_CONFIG = {
   // 注册路由
-  routes:['routeDemo1']
+  brpath:'../workplace/routers',
+  beforeroute: [],
+
+  routespath:'../workplace/routers',
+  routes: ['routeDemo1','routeDemo2'],
+
+  arpath: '../workplace/routers',
+  afterroute: [],
+
+  logwhenrunning: true
 }
 
 module.exports = {
   MYSQL_CONFIG,
   MONGODB_CONFIG,
   TWSERVER_CONFIG,
+  ROUTER_CONFIG
 }

@@ -2,7 +2,7 @@ const store = require('../store/index');
 
 function endHandler(result) {
   const { res } = store;
-  switch (res._headers['content-type']) {
+  switch (res.getHeaders()['content-type']) {
     case 'application/json':
       res.end(JSON.stringify(result))
       break;

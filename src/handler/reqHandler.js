@@ -11,13 +11,32 @@ const getPostData = (req) => {
     let postData = '';
     req.on('data', chunk => postData += chunk.toString());
 
-    if (req.headers['content-type'] === 'application/json') {
-      req.on('end', () => postData ? resolve(JSON.parse(postData)) : resolve({}));
-    } else if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
-      req.on('end', () => resolve(USP2Obj(new URLSearchParams(postData))));
-    } else {
-      resolve({});
+    switch (req.headers['content-type']) {
+      case 'application/json':
+        req.on('end', () => postData ? resolve(JSON.parse(postData)) : resolve({}));
+        break;
+      case 'application/x-www-form-urlencoded':
+        req.on('end', () => resolve(USP2Obj(new URLSearchParams(postData))));
+        break;
+      case 'text/plain':
+      case 'multipart/form-data':
+          // var form = new multiparty.Form();
+
+          // form.parse(req, function (err, fields, files) {
+          //   res.writeHead(200, { 'content-type': 'text/plain' });
+          //   res.write('received upload:\n\n');
+          //   res.end(util.inspect({ fields: fields, files: files }));
+          // });
+      default:
+        resolve({});
     }
+    // if (req.headers['content-type'] === 'application/json') {
+    //   req.on('end', () => postData ? resolve(JSON.parse(postData)) : resolve({}));
+    // } else if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+    //   req.on('end', () => resolve(USP2Obj(new URLSearchParams(postData))));
+    // } else {
+    //   resolve({});
+    // }
   })
 
   return promise;
