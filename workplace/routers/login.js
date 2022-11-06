@@ -1,9 +1,9 @@
-const { SuccessModel, ErrorModel } = require('../../src/model/responseModel');
+const { ErrorModel } = require('../../src/model/responseModel');
 const mapper = require('../../src/utils/mapper');
 const author = require('../controllers/author');
 
 module.exports = (req, res) => {
-  const { isGet,isPut,isPost,body} = req;
+  const { isGet, isPut, isPost, body } = req;
 
   if (mapper(isPut, '/author/signup')) {
     return author.register(body.username, body.address, body.birthday, body.pwd)

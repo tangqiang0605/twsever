@@ -1,6 +1,6 @@
 {
   "name": "twserver",
-  "version": "0.26.0",
+  "version": "0.28.0",
   "description": "前端开发者的礼物！twserver的目标是为前端人员提供一个开箱即用的临时服务器框架。只需简单设置路由、编写业务，就可以为自己的前端项目提供临时的后端接口和数据库支持。",
   "main": "./src/index.js",
   "scripts": {
@@ -14,7 +14,8 @@
     "mongoose",
     "router",
     "api",
-    "server"
+    "server",
+    "mock"
   ],
   "author": "tangqiang",
   "license": "ISC",

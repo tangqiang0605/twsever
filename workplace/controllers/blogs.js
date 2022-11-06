@@ -1,4 +1,5 @@
 const mysql = require('../../src/db/twmysql')
+const { SuccessModel, ErrorModel } = require('../../src/model/responseModel');
 
 const blogs = {
 
@@ -15,17 +16,23 @@ const blogs = {
   },
 
   delete: function (bid) {
-    return mysql.execSQL(`delete from blogs where bid=${bid}`);
+    return mysql.execSQL(`delete from blogs where bid=${bid}`)
+      .then(res => new SuccessModel(200, res))
+      .catch(err => new ErrorModel(500, err));
   },
 
   findByBid: function (bid) {
-    return mysql.execSQL(`select * from blogs where bid=${bid}`);
+    return mysql.execSQL(`select * from blogs where bid=${bid}`)
+      .then(res => new SuccessModel(200, res))
+      .catch(err => new ErrorModel(500, err));
   },
 
   findAll: function () {
-    return mysql.execSQL('select * from blogs');
+    return mysql.execSQL('select * from blogs')
+      .then(res => new SuccessModel(200, { total: res.length, data: res }))
+      .catch(err => new ErrorModel(500, err));
   }
-  
+
 }
 
 module.exports = blogs;
