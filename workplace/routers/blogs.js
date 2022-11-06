@@ -6,15 +6,11 @@ module.exports = (req, res) => {
   const { isPost, isGet, isPut,isDelete,body} = req;
 
   if (mapper(isPut, '/blogs')) {
-    return blogs.insert(body.uid, body.title, body.date, body.context)
-      .then(res => new SuccessModel(200,res))
-      .catch(err => new ErrorModel(500,err));
+    return blogs.insert(body.uid, body.title, body.date, body.context);
   }
 
   if (mapper(isPost, '/blogs')) {
-    return blogs.updateByBid(body.bid, body.uid, body.title, body.date, body.context)
-      .then(res => new SuccessModel(200,res))
-      .catch(err => new ErrorModel(500,err));
+    return blogs.updateByBid(body.bid, body.uid, body.title, body.date, body.context);
   }
 
   if (mapper(isDelete, '/blogs/:bid')) {

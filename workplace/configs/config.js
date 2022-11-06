@@ -9,7 +9,7 @@ const MYSQL_CONFIG = {
 const MONGODB_CONFIG = {
   host: 'localhost',
   port: 27017,
-  database: 'tempdb'
+  database: 'db4tws'
 }
 
 const TWSERVER_CONFIG = {
@@ -18,22 +18,27 @@ const TWSERVER_CONFIG = {
   // 设置为html,调用接口后返回的是html页面,适合静态服务器/服务端渲染项目
   returnform: 'json',
   // 后端服务器端口
-  port: 5000,
+  // port: 5000,
+  // beforeserver: './workplace/init/mock.js',
+  // whenserver: '',
+
+  token: true,
+  tokenscrect: 'twserver-token-screct',
+  algorithm:'ES256',
 }
 
 const ROUTER_CONFIG = {
   // 注册路由
-  brpath:'../workplace/routers',
+  brpath:'./workplace/routers',
   beforeroutes: [],
 
-  routespath:'../workplace/routers',
-  // routes: ['routeDemo1','routeDemo2'],
+  routespath:'./workplace/routers',
   routes:['author','login','blogs'],
 
-  arpath: '../workplace/routers',
+  arpath: './workplace/routers',
   afterroutes: [],
 
-  logwhenrunning: true
+  // logwhenrunning: true
 }
 
 module.exports = {

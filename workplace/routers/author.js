@@ -13,7 +13,7 @@ module.exports = (req, res) => {
 
   if (mapper(isGet, '/author/all')) {
     return author.findAll()
-      .then(res => new SuccessModel(200,res))
+      .then(res => new SuccessModel(200, { total: res.length, data: res }))
       .catch(err => new ErrorModel(500,err));
   }
 

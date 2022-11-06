@@ -11,9 +11,9 @@ const store = require('../store/index');
 const typeOf = require('../utils/typeOf');
 // const { type } = require('os');
 
-const routePath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.routespath + '/', routeName);
-const brPath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.brpath + '/', routeName);
-const arPath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.arpath + '/', routeName);
+const routePath = (routeName) => path.join(__dirname, '../../' + ROUTER_CONFIG.routespath + '/', routeName);
+const brPath = (routeName) => path.join(__dirname, '../../' + ROUTER_CONFIG.brpath + '/', routeName);
+const arPath = (routeName) => path.join(__dirname, '../../' + ROUTER_CONFIG.arpath + '/', routeName);
 
 async function handleRoute(curRoute, isLast) {
   const req = store.req;
