@@ -43,6 +43,7 @@ twserver会尽可能地在configs中提供你可能需要的配置选项。
 - configs：配置服务器、数据库、路由的地方。
 - controllers：编写crud等业务代码的地方。
 - routers：编写路由，调用业务的地方。
+- init：在服务器启动前执行的任务。比如在服务器启动前使用mock生成假数据存入数据库中。
 
 你可以在routes和controllers文件夹下删除或新增任意多个路由和业务处理模块。以满足你的业务需求。
 

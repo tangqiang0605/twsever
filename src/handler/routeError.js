@@ -3,7 +3,7 @@ const endHandler = require('./endHandler');
 let store = require('../store/index')
 module.exports = (err, isLast) => {
 
-  if ((err === 404 || err === '404' || err.data === 404 || err.data === '404')
+  if ((err === 404 || err === '404' || err.status === 404 || err.status === '404')
     && isLast && !store.ismapper) {
     noPage(store.res);
   }

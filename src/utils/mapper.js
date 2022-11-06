@@ -3,21 +3,33 @@ const store = require('../store/index');
 // 因为require只生效一次？不是。反正解构赋值就是用不了。我不理解。
 // const {req}= require('../store/index');
 module.exports = function (way, url) {
+  
+  // console.log(url);
 
-  let { path,method} = store.req;
+  if (store.ismapper) {
+    return false;
+  }
+
+  if (!way) {
+    return false;
+  }
 
   // 普通路由
-  if (way && url === path) {
+  let { path } = store.req;
+  if (url === path) {
     store.ismapper = true;
     return true;
+    // 普通路由永远优先于动态路由
   }
-  
+
+
   // 动态路由
   url = url.split('/:');
 
-  if (url.length>1) {
+  if (url.length > 1) {
+    // console.log(true);
     path = path.split('/').splice(1);
-    
+
     let [preurl, ...keys] = url;
     let [prepath, ...values] = path;
     prepath = '/' + prepath;
@@ -28,9 +40,10 @@ module.exports = function (way, url) {
         params[keys[i]] = values[i];
       }
       store.req.params = params;
+      // console.log(params);
       store.ismapper = true;
       return true;
-    } 
+    }
     return false;
   }
 

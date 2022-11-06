@@ -3,7 +3,7 @@ const MYSQL_CONFIG = {
   user: 'root',
   password: '1234',
   port: 3306,
-  database: 'test4tws'
+  database: 'db4tws'
 };
 
 const MONGODB_CONFIG = {
@@ -24,15 +24,16 @@ const TWSERVER_CONFIG = {
 const ROUTER_CONFIG = {
   // 注册路由
   brpath:'../workplace/routers',
-  beforeroutes: ['beforeRoute'],
+  beforeroutes: [],
 
   routespath:'../workplace/routers',
-  routes: ['routeDemo1','routeDemo2'],
+  // routes: ['routeDemo1','routeDemo2'],
+  routes:['author','login','blogs'],
 
   arpath: '../workplace/routers',
   afterroutes: [],
 
-  logwhenrunning: false
+  logwhenrunning: true
 }
 
 module.exports = {

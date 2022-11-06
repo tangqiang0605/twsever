@@ -9,7 +9,7 @@ const { ROUTER_CONFIG } = require('../../workplace/configs/config');
 const store = require('../store/index');
 
 const typeOf = require('../utils/typeOf');
-const { type } = require('os');
+// const { type } = require('os');
 
 const routePath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.routespath + '/', routeName);
 const brPath = (routeName) => path.join(__dirname, '../' + ROUTER_CONFIG.brpath + '/', routeName);
@@ -28,7 +28,6 @@ async function handleRoute(curRoute, isLast) {
         await route[`${val}`](req, res)
           .then(result => endHandler(result))
           .catch(err => {
-            // console.log(err);
             routeError(err, i === keys.length - 1&&isLast)
           })
       }
