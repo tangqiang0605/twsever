@@ -1,10 +1,10 @@
-const mysql = require('mysql');
+const sqlmy = require('mysql');
 const { MYSQL_CONFIG } = require('../../workplace/configs/config');
-const pool = mysql.createPool(MYSQL_CONFIG);
+const mysql = sqlmy.createPool(MYSQL_CONFIG);
 
-pool.execSQL = function (sql) {
+mysql.execSQL = function (sql) {
   const promise = new Promise(function (resolve, reject) {
-    pool.getConnection(function (err, connection) {
+    mysql.getConnection(function (err, connection) {
 
       connection.query(sql, (err, result) => {
         connection.release();
@@ -19,4 +19,4 @@ pool.execSQL = function (sql) {
   return promise;
 }
 
-module.exports = pool;
+module.exports = mysql;
